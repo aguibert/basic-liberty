@@ -1,0 +1,69 @@
+apply plugin: 'war'
+apply plugin: 'liberty'
+
+group = 'io.openliberty.guides'
+version = '1.0-SNAPSHOT'
+description = "JSF Container guide"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.1'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '3.6.8.Final'
+	runtime group: 'org.apache.derby', name: 'derby', version: '10.8.2.2'
+	runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.4'
+	compileOnly group: 'javax', name: 'javaee-api', version: '7.0'
+    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '[17.0.0.4,)'
+}
+
+ext {
+	httpPort = 8080
+	httpsPort = 8443
+	appUrl = 'http://localhost:' + httpPort
+}
+
+liberty {
+	server {
+		name = rootProject.name + 'Server'
+		dropins = [war]
+		bootstrapProperties = ['httpPort': httpPort, 'httpsPort': httpsPort]
+	}
+}
+
+task openBrowser {
+    description = 'Open browser to${appUrl}'
+    doLast {
+        java.awt.Desktop.desktop.browse "${appUrl}".toURI()
+    }
+}
+
+clean.dependsOn 'libertyStop'
+libertyPackage.dependsOn 'libertyStop'
+libertyStart.dependsOn 'libertyStop'
+libertyRun.dependsOn 'libertyStop'
+libertyStart.doLast {
+	println "Application available at: ${appUrl}"
+}
+
+	libertyStart.dependsOn 'libertyStop'
+	libertyRun.dependsOn 'libertyStop'
+	
+	task start { dependsOn 'libertyStart' }
+	task stop  { dependsOn 'libertyStop' }
+
