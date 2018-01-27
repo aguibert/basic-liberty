@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+  version="2.0">
+  <persistence-unit name="test_pu" transaction-type="JTA">
+	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+	<jta-data-source>java:comp/env/jdbc/derby</jta-data-source>
+	<class>org.aguibert.liberty.Widget</class>
+    <properties>
+<!--       <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/> -->
+      <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+<!--       <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:test;create=true"/> -->
+<!--       <property name="hibernate.hbm2ddl.auto" value="create"/>  -->
+		<property name="javax.persistence.schema-generation.database.action" value="create" />
+		<property name="hibernate.transaction.jta.platform" value="org.hibernate.engine.transaction.jta.platform.internal.WebSphereExtendedJtaPlatform"/>
+    </properties>
+  </persistence-unit>
+</persistence>

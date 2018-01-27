@@ -25,9 +25,9 @@ repositories {
 }
 
 dependencies {
-	compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '3.6.8.Final'
-	runtime group: 'org.apache.derby', name: 'derby', version: '10.8.2.2'
-	runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.4'
+	compileOnly group: 'org.hibernate', name: 'hibernate-core', version: '5.3.0.Beta1'
+	compileOnly group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.4'
+	compileOnly group: 'org.apache.derby', name: 'derby', version: '10.14.1.0'
 	compileOnly group: 'javax', name: 'javaee-api', version: '7.0'
     libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '[17.0.0.4,)'
 }
@@ -35,13 +35,13 @@ dependencies {
 ext {
 	httpPort = 8080
 	httpsPort = 8443
-	appUrl = 'http://localhost:' + httpPort
+	appUrl = 'http://localhost:8080/basic-liberty-1.0-SNAPSHOT/books/'
 }
 
 liberty {
 	server {
 		name = rootProject.name + 'Server'
-		dropins = [war]
+		// dropins = [war]
 		bootstrapProperties = ['httpPort': httpPort, 'httpsPort': httpsPort]
 	}
 }
