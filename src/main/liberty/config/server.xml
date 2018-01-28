@@ -1,9 +1,7 @@
 <server>
 
     <featureManager>
-    	<feature>jaxrs-2.0</feature>
-    	<feature>jdbc-4.1</feature>
-    	<feature>jndi-1.0</feature>
+    	<feature>webProfile-7.0</feature>
     </featureManager>
     
     <httpEndpoint id="defaultHttpEndpoint" httpPort="${httpPort}" httpsPort="${httpsPort}" />
