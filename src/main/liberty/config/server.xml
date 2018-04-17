@@ -4,6 +4,8 @@
     	<feature>webProfile-7.0</feature>
     </featureManager>
     
+    <keyStore password="changeit"/>
+    
     <httpEndpoint id="defaultHttpEndpoint" httpPort="${httpPort}" httpsPort="${httpsPort}" />
 
 </server>
