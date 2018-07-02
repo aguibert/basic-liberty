@@ -1,11 +1,30 @@
 <server>
 
     <featureManager>
-    	<feature>webProfile-7.0</feature>
+    	   <feature>webProfile-8.0</feature>
+    	   <feature>mpConfig-1.2</feature>
+    	   <feature>jndi-1.0</feature>
     </featureManager>
+    
+    <application location="basic-liberty-1.0-SNAPSHOT.war">
+        <classloader commonLibraryRef="mongoLib"/>
+    </application>
     
     <keyStore password="changeit"/>
     
     <httpEndpoint id="defaultHttpEndpoint" httpPort="${httpPort}" httpsPort="${httpsPort}" />
+    
+    <jndiObjectFactory id="mongoFactory" 
+        className="com.mongodb.client.jndi.MongoClientFactory" 
+        objectClassName="com.mongodb.MongoClient"
+        libraryRef="mongoLib"/>
+    
+    <jndiReferenceEntry jndiName="mongo/myDB" factoryRef="mongoFactory">
+        <properties connectionString="mongodb://localhost:27017/?serverSelectionTimeout=15000&amp;w=1&amp;ssl=false"/>
+    </jndiReferenceEntry>
+    
+    <library id="mongoLib">
+        <file name="/Users/aguibert/.gradle/caches/modules-2/files-2.1/org.mongodb/mongo-java-driver/3.8.0/d9d56e3f038524c29c86afcd2db3d38a19c3bc11/mongo-java-driver-3.8.0.jar"></file>
+    </library>
 
 </server>
