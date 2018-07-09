@@ -3,7 +3,6 @@ package org.aguibert.liberty;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -18,8 +17,8 @@ public class TestService {
     @Inject
     MongoDatabase db;
 
-    @Resource(lookup = "mongo/myDB")
-    com.mongodb.MongoClient client;
+//    @Resource(lookup = "mongo/myDB")
+//    com.mongodb.MongoClient client;
 
     @GET
     public String test() {
@@ -39,7 +38,7 @@ public class TestService {
 
     private void doTest() throws Exception {
         log("Hello world");
-        log("@AGG got client: " + client);
+        log("@AGG got db: " + db);
     }
 
     private StringWriter sb = new StringWriter();
