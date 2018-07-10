@@ -11,9 +11,8 @@
 <!--         <classloader commonLibraryRef="mongoLib"/> -->
     </application>
     
-    <keyStore password="changeit"/>
-    
-    <httpEndpoint id="defaultHttpEndpoint" httpPort="${httpPort}" httpsPort="${httpsPort}" />
+    <ssl id="mySSL" keyStoreRef="myTrustStore"/>
+    <keyStore password="srEk21a5aD5pI4qUHYmozUn" id="myTrustStore" location="${server.config.dir}/resources/security/myKeys.jks"/>
     
 <!--     <jndiObjectFactory id="mongoFactory"  -->
 <!--         className="com.mongodb.client.jndi.MongoClientFactory"  -->

@@ -1,15 +1,22 @@
 package org.aguibert.liberty;
 
+import java.util.Collections;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.net.ssl.SSLContext;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import com.ibm.websphere.crypto.PasswordUtil;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import com.ibm.websphere.ssl.JSSEHelper;
+import com.ibm.websphere.ssl.SSLException;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
 
 @ApplicationScoped
@@ -36,23 +43,24 @@ public class MongoProducer {
     String encodedPass;
 
     @Produces
-    public MongoClient createMongo() {
-        System.out.println("@AGG creating MongoClient...");
-        String creds = user + ':' + PasswordUtil.passwordDecode(encodedPass) + '@';
-        String mongoServer1 = hostname + ':' + port;
-        // Connection string format is:
-        //  mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database.collection][?options]]
-        return MongoClients.create("mongodb://" + creds + mongoServer1);
+    public MongoClient createMongo() throws SSLException {
+        System.out.println("creating MongoClient...");
+        MongoCredential creds = MongoCredential.createCredential(user, dbName, PasswordUtil.passwordDecode(encodedPass).toCharArray());
+        SSLContext sslContext = JSSEHelper.getInstance().getSSLContext("mySSL", Collections.emptyMap(), null);
+        return new MongoClient(new ServerAddress(), creds, new MongoClientOptions.Builder()
+                        .sslEnabled(true)
+                        .sslContext(sslContext)
+                        .sslInvalidHostNameAllowed(true) // ignore cert validation for local experimenting
+                        .build());
     }
 
     @Produces
     public MongoDatabase createDB(MongoClient client) {
-        System.out.println("@AGG creating MongoDatabase...");
+        System.out.println("creating MongoDatabase...");
         return client.getDatabase(dbName);
     }
 
     public void close(@Disposes MongoClient toClose) {
         toClose.close();
     }
-
 }
