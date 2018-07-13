@@ -1,9 +1,9 @@
 apply plugin: 'war'
 apply plugin: 'liberty'
 
-group = 'io.openliberty.guides'
+group = 'org.aguibert'
 version = '1.0-SNAPSHOT'
-description = "JSF Container guide"
+description = "Basic Liberty repo"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -48,7 +48,7 @@ liberty {
 }
 
 task openBrowser {
-    description = 'Open browser to${appUrl}'
+    description = "Open browser to ${appUrl}"
     doLast {
         java.awt.Desktop.desktop.browse "${appUrl}".toURI()
     }
@@ -62,9 +62,9 @@ libertyStart.doLast {
 	println "Application available at: ${appUrl}"
 }
 
-	libertyStart.dependsOn 'libertyStop'
-	libertyRun.dependsOn 'libertyStop'
-	
-	task start { dependsOn 'libertyStart' }
-	task stop  { dependsOn 'libertyStop' }
+libertyStart.dependsOn 'libertyStop'
+libertyRun.dependsOn 'libertyStop'
+
+task start { dependsOn 'libertyStart' }
+task stop  { dependsOn 'libertyStop' }
 
