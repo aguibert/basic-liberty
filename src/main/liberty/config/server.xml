@@ -1,11 +1,24 @@
 <server>
 
     <featureManager>
-    	<feature>webProfile-7.0</feature>
+    	<feature>webProfile-8.0</feature>
     </featureManager>
     
     <keyStore password="changeit"/>
     
     <httpEndpoint id="defaultHttpEndpoint" httpPort="${httpPort}" httpsPort="${httpsPort}" />
+    
+    <library id="H2JDBCLib">
+        <fileset dir="${server.config.dir}/lib" includes="h2-1.4.197.jar"/>
+    </library>
+
+    <dataSource id="h2test" jndiName="jdbc/h2test">
+        <jdbcDriver 
+        	javax.sql.XADataSource="org.h2.jdbcx.JdbcDataSource"
+        	javax.sql.ConnectionPoolDataSource="org.h2.jdbcx.JdbcDataSource"
+        	javax.sql.DataSource="org.h2.jdbcx.JdbcDataSource" 
+        	libraryRef="H2JDBCLib"/>
+        <properties URL="jdbc:h2:mem:testdb"/>
+    </dataSource>
 
 </server>

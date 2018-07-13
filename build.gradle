@@ -24,10 +24,19 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+	serverLibs
+}
+
 dependencies {
-	compileOnly 'org.apache.derby:derby:10.14.1.0'
 	compileOnly 'javax:javaee-api:8.0'
+	serverLibs  'com.h2database:h2:1.4.197'
     libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '[18.0.0.2,)'
+}
+
+task copyServerLibs(type: Copy) {
+	from configurations.serverLibs
+	into "${buildDir}/wlp/usr/servers/${rootProject.name}Server/lib"
 }
 
 ext {
@@ -41,13 +50,14 @@ liberty {
 		name = rootProject.name + 'Server'
 		dropins = [war]
 		bootstrapProperties = ['httpPort': httpPort, 'httpsPort': httpsPort]
+		configDirectory = file('src/main/liberty/config')
 	}
     install {
         //runtimeUrl = "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/beta/wlp-beta-2017.12.0.0.zip"
     }
 }
 
-task openBrowser {
+task open {
     description = 'Open browser to${appUrl}'
     doLast {
         java.awt.Desktop.desktop.browse "${appUrl}".toURI()
@@ -55,16 +65,17 @@ task openBrowser {
 }
 
 clean.dependsOn 'libertyStop'
-libertyPackage.dependsOn 'libertyStop'
+installApps.dependsOn 'copyServerLibs'
+libertyPackage.dependsOn 'libertyStop', 'copyServerLibs'
 libertyStart.dependsOn 'libertyStop'
 libertyRun.dependsOn 'libertyStop'
 libertyStart.doLast {
 	println "Application available at: ${appUrl}"
 }
 
-	libertyStart.dependsOn 'libertyStop'
-	libertyRun.dependsOn 'libertyStop'
-	
-	task start { dependsOn 'libertyStart' }
-	task stop  { dependsOn 'libertyStop' }
+libertyStart.dependsOn 'libertyStop'
+libertyRun.dependsOn 'libertyStop'
+
+task start { dependsOn 'libertyStart' }
+task stop  { dependsOn 'libertyStop' }
 
