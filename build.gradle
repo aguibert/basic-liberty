@@ -41,6 +41,7 @@ liberty {
 		name = rootProject.name + 'Server'
 		dropins = [war]
 		bootstrapProperties = ['httpPort': httpPort, 'httpsPort': httpsPort]
+		configDirectory = file('src/main/liberty/config')
 	}
     install {
         //runtimeUrl = "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/beta/wlp-beta-2017.12.0.0.zip"
