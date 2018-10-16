@@ -29,6 +29,7 @@ public class TestService {
 
     private void doTest() throws Exception {
         log("Hello world");
+        log("This class is in: " + getClass().getModule());
     }
 
     private StringWriter sb = new StringWriter();

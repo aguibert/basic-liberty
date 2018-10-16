@@ -5,10 +5,21 @@ group = 'org.aguibert'
 version = '1.0-SNAPSHOT'
 description = "Basic Liberty repo"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 11
+targetCompatibility = 11
+
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+compileJava {
+    //inputs.property("moduleName", moduleName)
+    doFirst {
+        options.compilerArgs = [
+            '--module-path', classpath.asPath,
+        ]
+        classpath = files()  
+    }
 }
 
 buildscript {
@@ -25,8 +36,12 @@ repositories {
 }
 
 dependencies {
-	compileOnly 'org.apache.derby:derby:10.14.1.0'
-	compileOnly 'javax:javaee-api:8.0'
+	//compileOnly 'org.apache.derby:derby:10.14.1.0'
+    compileOnly group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.1.1'
+    compileOnly group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+    compileOnly group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+    compileOnly group: 'javax.enterprise', name: 'cdi-api', version: '2.0'
+	//compileOnly 'javax:javaee-api:8.0'
     libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '[18.0.0.2,)'
 }
 
