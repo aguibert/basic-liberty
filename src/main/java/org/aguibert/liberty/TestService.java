@@ -6,6 +6,8 @@ import java.io.StringWriter;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 @Path("/")
 @ApplicationScoped
@@ -37,6 +39,15 @@ public class TestService {
         System.out.println(msg);
         sb.append(msg);
         sb.append("<br/>");
+    }
+
+    @GET
+    @Path("event")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Event getEvent() {
+        Event e = new Event();
+        e.message = "Hello world!";
+        return e;
     }
 
 }
