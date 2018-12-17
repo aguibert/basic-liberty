@@ -2,14 +2,22 @@ package org.aguibert.liberty;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 @Path("/")
 @ApplicationScoped
 public class TestService {
+
+    @Inject
+    Connection con;
 
     @GET
     public String test() {
@@ -29,6 +37,29 @@ public class TestService {
 
     private void doTest() throws Exception {
         log("Hello world");
+        log("Using loader: " + getClass().getClassLoader());
+        log("Using connection: " + con);
+        Statement stmt = con.createStatement();
+        try {
+            stmt.execute("CREATE TABLE PERSON (id int primary key, name varchar(255))");
+            log("Created new table");
+        } catch (SQLException e) {
+            log("Table already existed UPDATED6 ...");
+        }
+
+        stmt.execute("DELETE FROM PERSON");
+
+        stmt.execute("INSERT INTO PERSON(id, name) VALUES(1, 'Anju')");
+        stmt.execute("INSERT INTO PERSON(id, name) VALUES(2, 'Sonia')");
+        stmt.execute("INSERT INTO PERSON(id, name) VALUES(3, 'Asha')");
+
+        ResultSet rs = stmt.executeQuery("select * from PERSON");
+        log("<h2>Found results:</h2>");
+        log("<ul>");
+        while (rs.next()) {
+            log("<li> Id " + rs.getInt("id") + " Name " + rs.getString("name") + "</li>");
+        }
+        log("</ul>");
     }
 
     private StringWriter sb = new StringWriter();

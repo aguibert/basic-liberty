@@ -22,12 +22,16 @@ buildscript {
 
 repositories {
     mavenCentral()
+    maven {
+      url 'https://repo.spring.io/milestone'
+    }
 }
 
 dependencies {
 	compileOnly 'org.apache.derby:derby:10.14.1.0'
 	compileOnly 'javax:javaee-api:8.0'
-    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '18.0.0.4'
+	compile group: 'io.r2dbc', name: 'r2dbc-h2', version: '1.0.0.M6'
+    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '18.0.0.3'
 }
 
 ext {
@@ -48,6 +52,18 @@ liberty {
     }
 }
 
+eclipse {
+    classpath {
+        defaultOutputDir =  file('build/classes/java/main')
+        file {
+            whenMerged {
+                entries.findAll { it.path.startsWith('src/test') }
+                       .each { it.output = "build/classes/java/test" }
+            }
+        }
+    }
+}
+
 task openBrowser {
     description = "Open browser to ${appUrl}"
     doLast {
@@ -61,6 +77,11 @@ libertyStart.dependsOn 'libertyStop'
 libertyRun.dependsOn 'libertyStop'
 libertyStart.doLast {
 	println "Application available at: ${appUrl}"
+}
+
+libertyStop.doLast {
+  println "Remove classcache"
+  delete "build/wlp/usr/servers/.classCache"
 }
 
 libertyStart.dependsOn 'libertyStop'
