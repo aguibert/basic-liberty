@@ -27,7 +27,7 @@ repositories {
 dependencies {
 	compileOnly 'org.apache.derby:derby:10.14.1.0'
 	compileOnly 'javax:javaee-api:8.0'
-    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '18.0.0.4'
+    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '18.0.0.3'
 }
 
 ext {
