@@ -12,6 +12,10 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
+import io.r2dbc.client.R2dbc;
+import io.r2dbc.h2.H2ConnectionConfiguration;
+import io.r2dbc.h2.H2ConnectionFactory;
+
 @Path("/")
 @ApplicationScoped
 public class TestService {
@@ -60,6 +64,16 @@ public class TestService {
             log("<li> Id " + rs.getInt("id") + " Name " + rs.getString("name") + "</li>");
         }
         log("</ul>");
+
+        H2ConnectionConfiguration h2Config = H2ConnectionConfiguration.builder()
+                        .inMemory("test")
+                        .build();
+        R2dbc r2dbc = new R2dbc(new H2ConnectionFactory(h2Config));
+        r2dbc.inTransaction(handle -> handle.execute("INSERT INTO test VALUES ($1)", 100)) // Flux<Integer>
+                        .thenMany(
+                                  r2dbc.inTransaction(handle -> handle.select("SELECT value FROM test")
+                                                  .mapResult(result -> result.map((row, rowMetadata) -> row.get("value", Integer.class)))))
+                        .subscribe(System.out::println);
     }
 
     private StringWriter sb = new StringWriter();
