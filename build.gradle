@@ -80,11 +80,6 @@ libertyStart.doLast {
 	println "Application available at: ${appUrl}"
 }
 
-libertyStop.doLast {
-  println "Remove classcache"
-  delete "build/wlp/usr/servers/.classCache"
-}
-
 libertyStart.dependsOn 'libertyStop'
 libertyRun.dependsOn 'libertyStop'
 

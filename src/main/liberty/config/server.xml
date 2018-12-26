@@ -7,5 +7,7 @@
     <keyStore password="changeit"/>
     
     <httpEndpoint id="defaultHttpEndpoint" httpPort="${httpPort}" httpsPort="${httpsPort}" />
+    
+    <logging hideMessage="CWWKC0044W"/>
 
 </server>
