@@ -8,26 +8,12 @@ description = "Basic Liberty repo"
 sourceCompatibility = 11
 targetCompatibility = 11
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
-compileJava {
-    //inputs.property("moduleName", moduleName)
-    doFirst {
-        options.compilerArgs = [
-            '--module-path', classpath.asPath,
-        ]
-        classpath = files()  
-    }
-}
-
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.4.+'
+        classpath 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.6.3'
     }
 }
 
@@ -36,13 +22,8 @@ repositories {
 }
 
 dependencies {
-	//compileOnly 'org.apache.derby:derby:10.14.1.0'
-    compileOnly group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.1.1'
-    compileOnly group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
-    compileOnly group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-    compileOnly group: 'javax.enterprise', name: 'cdi-api', version: '2.0'
-	//compileOnly 'javax:javaee-api:8.0'
-    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '[18.0.0.2,)'
+    providedCompile group: 'javax', name: 'javaee-api', version: '8.0'
+    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '[19.0.0.1,)'
 }
 
 ext {
@@ -58,9 +39,6 @@ liberty {
 		bootstrapProperties = ['httpPort': httpPort, 'httpsPort': httpsPort]
 		configDirectory = file('src/main/liberty/config')
 	}
-    install {
-        //runtimeUrl = "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/beta/wlp-beta-2017.12.0.0.zip"
-    }
 }
 
 task openBrowser {
