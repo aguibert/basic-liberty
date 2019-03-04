@@ -16,7 +16,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.6'
+        classpath 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.6.3'
     }
 }
 
@@ -25,9 +25,9 @@ repositories {
 }
 
 dependencies {
-	compileOnly 'org.apache.derby:derby:10.14.1.0'
-	compileOnly 'javax:javaee-api:8.0'
-    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '18.0.0.3'
+	providedCompile 'javax:javaee-api:8.0'
+	providedCompile 'org.eclipse.microprofile:microprofile:2.1'
+    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '19.0.0.1'
 }
 
 ext {
