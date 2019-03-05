@@ -1,5 +1,9 @@
-apply plugin: 'war'
-apply plugin: 'liberty'
+plugins {
+  id 'war'
+  id 'net.wasdev.wlp.gradle.plugins.Liberty' version '2.6.3'
+  id 'com.palantir.docker' version '0.21.0'
+  id 'com.palantir.docker-run' version '0.21.0'
+}
 
 group = 'org.aguibert'
 version = '1.0-SNAPSHOT'
@@ -9,15 +13,6 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.6.3'
-    }
 }
 
 repositories {
@@ -46,6 +41,32 @@ liberty {
     install {
         //runtimeUrl = "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/beta/wlp-beta-2017.12.0.0.zip"
     }
+}
+
+task dockerCopyApp(type: Copy) {
+  dependsOn war
+  shouldRunAfter dockerClean
+  from tasks.war.outputs
+  into 'build/docker/build/libs'
+}
+
+task dockerCopyLibertyConfig(type: Copy) {
+  shouldRunAfter dockerClean
+  from liberty.server.configDirectory
+  into 'build/docker/src/main/liberty/config'
+}
+
+docker {
+    bogus
+    dependsOn dockerCopyApp, dockerCopyLibertyConfig
+    name 'basic-liberty'
+}
+
+dockerRun {
+    //dependsOn dockerStop, dockerRemoveContainer
+    name 'basic-liberty-container'
+    image 'basic-liberty'
+    //daemonize false
 }
 
 task openBrowser {
