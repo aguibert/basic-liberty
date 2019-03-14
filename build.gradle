@@ -56,18 +56,23 @@ task dockerCopyLibertyConfig(type: Copy) {
   into 'build/docker/src/main/liberty/config'
 }
 
-docker {
-    bogus
+dockerPrepare {
     dependsOn dockerCopyApp, dockerCopyLibertyConfig
-    name 'basic-liberty'
+}
+
+docker {
+    name rootProject.name
 }
 
 dockerRun {
     //dependsOn dockerStop, dockerRemoveContainer
-    name 'basic-liberty-container'
-    image 'basic-liberty'
-    //daemonize false
+    name rootProject.name + '-container'
+    image rootProject.name
+    ports "${httpPort}:9080", "${httpsPort}:9443"
 }
+
+dockerRemoveContainer.dependsOn 'dockerStop'
+tasks.dockerRun.dependsOn 'dockerRemoveContainer'
 
 task openBrowser {
     description = "Open browser to ${appUrl}"
