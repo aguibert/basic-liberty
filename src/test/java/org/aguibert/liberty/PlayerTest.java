@@ -15,22 +15,41 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TestName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 public class PlayerTest {
 
     private static final String APP_PATH = "/basic-liberty-1.0-SNAPSHOT";
+    private static final String MONGO_HOST = "testmongo";
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayerTest.class);
 
-    @ClassRule
+    public static Network network = Network.newNetwork();
+
+    public static GenericContainer<?> mongodb = new GenericContainer<>("mongo:3.4")
+                    .withExposedPorts(27017)
+                    .withNetwork(network)
+                    .withNetworkAliases(MONGO_HOST)
+                    .waitingFor(Wait.forListeningPort());
+
     public static LibertyContainer playerContainer = new LibertyContainer("basic-liberty")
                     .withExposedPorts(9080)
                     //.waitForMPHealth(); // TODO: this won't be ready until we have "readiness" checks in MP Health 2.0
-                    .waitingFor(Wait.forHttp(APP_PATH));
+                    .waitingFor(Wait.forHttp(APP_PATH))
+                    .withNetwork(network)
+                    .withEnv("MONGO_HOSTNAME", MONGO_HOST)
+                    .withEnv("MONGO_PORT", "27017");
+
+    @ClassRule
+    public static RuleChain classRules = RuleChain.outerRule(network)
+                    .around(mongodb)
+                    .around(playerContainer);
 
     @Rule
     public TestName testName = new TestName();
@@ -40,6 +59,7 @@ public class PlayerTest {
     @BeforeClass
     public static void setupClass() {
         playerContainer.followOutput(new Slf4jLogConsumer(LOGGER));
+        mongodb.followOutput(new Slf4jLogConsumer(LOGGER));
         personSvc = playerContainer.createRestClient(PersonService.class, APP_PATH);
     }
 

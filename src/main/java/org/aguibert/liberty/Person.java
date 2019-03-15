@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
+import org.bson.Document;
+
 /**
  * @author aguibert
  */
@@ -56,6 +58,18 @@ public class Person {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, age);
+    }
+
+    public Document toDocument() {
+        Document doc = new Document();
+        doc.put("name", name);
+        doc.put("age", age);
+        doc.put("id", id);
+        return doc;
+    }
+
+    public static Person fromDocument(Document doc) {
+        return new Person(doc.getString("name"), doc.getInteger("age"), doc.getLong("id"));
     }
 
 }

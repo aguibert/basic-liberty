@@ -1,10 +1,13 @@
 package org.aguibert.liberty;
 
+import static com.mongodb.client.model.Filters.eq;
+
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PositiveOrZero;
@@ -20,50 +23,59 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.bson.Document;
+
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
+
 @Path("/")
 @ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class PersonService {
 
-    private final Map<Long, Person> db = new HashMap<>();
+    @Inject
+    MongoCollection<Document> peopleCollection;
 
     @GET
     public Collection<Person> getAllPeople() {
-        return db.values();
+        Set<Person> allPeople = new HashSet<>();
+        for (Document doc : peopleCollection.find())
+            allPeople.add(Person.fromDocument(doc));
+        return allPeople;
     }
 
     @GET
     @Path("/{personId}")
     public Person getPerson(@PathParam("personId") long id) {
-        Person p = db.get(id);
-        if (p == null)
+        Document foundPerson = peopleCollection.find(eq("id", id)).first();
+        if (foundPerson == null)
             personNotFound(id);
-        return p;
+        return Person.fromDocument(foundPerson);
     }
 
     @POST
     public Long createPerson(@QueryParam("name") @NotEmpty @Size(min = 2, max = 50) String name,
                              @QueryParam("age") @PositiveOrZero int age) {
         Person p = new Person(name, age);
-        db.put(p.id, p);
+        peopleCollection.insertOne(p.toDocument());
         return p.id;
     }
 
     @POST
     @Path("/{personId}")
     public void updatePerson(@PathParam("personId") long id, @Valid Person p) {
-        Person oldPerson = db.get(id);
-        if (oldPerson == null)
+        UpdateResult result = peopleCollection.replaceOne(eq("id", id), p.toDocument());
+        if (result.getMatchedCount() != 1)
             personNotFound(id);
-        db.put(id, p);
     }
 
     @DELETE
     @Path("/{personId}")
     public void removePerson(@PathParam("personId") long id) {
-        Person removed = db.remove(id);
-        if (removed == null)
+        DeleteResult result = peopleCollection.deleteOne(eq("id", id));
+        if (result.getDeletedCount() != 1)
             personNotFound(id);
     }
 
