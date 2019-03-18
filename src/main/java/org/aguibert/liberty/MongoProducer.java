@@ -22,7 +22,7 @@ public class MongoProducer {
     String PERSON_REPO_NAME;
 
     @Inject
-    @ConfigProperty(name = "MONGO_HOSTNAME", defaultValue = "localhost")
+    @ConfigProperty(name = "MONGO_HOSTNAME", defaultValue = "127.0.0.1")
     String MONGO_HOSTNAME;
 
     @Inject
@@ -37,7 +37,11 @@ public class MongoProducer {
     @Produces
     public MongoClient createMongo() {
         System.out.println("Create mongo with host=" + MONGO_HOSTNAME + " port=" + MONGO_PORT);
-        return new MongoClient(new ServerAddress(MONGO_HOSTNAME, MONGO_PORT), new MongoClientOptions.Builder().build());
+        return new MongoClient(new ServerAddress(MONGO_HOSTNAME, MONGO_PORT), //
+                        new MongoClientOptions.Builder()
+                                        .connectTimeout(5000)
+                                        .maxWaitTime(5000)
+                                        .build());
     }
 
     @Produces

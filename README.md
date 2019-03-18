@@ -1,13 +1,11 @@
-Repo for quick testing of Liberty apps
-
-To build+run locally, do:
-
-```
-./gradlew dockerRun
-```
+Simple integration testing of JavaEE and MicroProfile apps using Testcontainers:
 
 To run integration tests:
-
 ```
-./gradlew integrationTest
+./gradlew test
+```
+
+To run the app as a docker container locally:
+```
+./gradlew composeUp
 ```

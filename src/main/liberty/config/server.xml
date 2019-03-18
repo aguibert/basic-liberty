@@ -8,5 +8,7 @@
         <feature>beanValidation-2.0</feature>
         <feature>cdi-2.0</feature>
     </featureManager>
+    
+    <application location="basic-liberty-1.0-SNAPSHOT.war" context-root="/my-service"/>
         
 </server>

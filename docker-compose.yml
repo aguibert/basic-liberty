@@ -1,0 +1,16 @@
+version: '3'
+services:
+  mongo:
+    image: mongo:3.4
+    ports:
+      - "27017:27017"
+  basic-liberty:
+    build: .
+    image: basic-liberty
+    depends_on:
+      - "mongo"
+    ports:
+      - "9080:9080"
+    environment:
+      - MONGO_HOSTNAME=mongo
+      - MONGO_PORT=27017
