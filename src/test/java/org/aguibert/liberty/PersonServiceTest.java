@@ -34,16 +34,16 @@ public class PersonServiceTest {
 
     @ClassRule
     public static GenericContainer<?> mongodb = new GenericContainer<>("mongo:3.4")
-                    .withExposedPorts(27017)
                     .withNetwork(network)
                     .withNetworkAliases(MONGO_HOST)
-                    .waitingFor(Wait.forListeningPort());
+                    .withLogConsumer(new Slf4jLogConsumer(LOGGER));
 
     @ClassRule
     public static LibertyContainer libertyContainer = new LibertyContainer("basic-liberty")
                     .withExposedPorts(9080)
                     .waitingFor(Wait.forHttp(APP_PATH))
                     .withNetwork(network)
+                    .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                     .withEnv("MONGO_HOSTNAME", MONGO_HOST)
                     .withEnv("MONGO_PORT", "27017");
 
@@ -54,8 +54,6 @@ public class PersonServiceTest {
 
     @BeforeClass
     public static void setupClass() {
-        libertyContainer.followOutput(new Slf4jLogConsumer(LOGGER));
-        mongodb.followOutput(new Slf4jLogConsumer(LOGGER));
         personSvc = libertyContainer.createRestClient(PersonService.class, APP_PATH);
     }
 
@@ -108,6 +106,22 @@ public class PersonServiceTest {
                    allPeople.contains(expected1));
         assertTrue("Did not find person " + expected2 + " in all people: " + allPeople,
                    allPeople.contains(expected2));
+    }
+
+    @Test
+    public void testUpdateAge() {
+        Long personId = personSvc.createPerson("newAgePerson", 1);
+
+        Person originalPerson = personSvc.getPerson(personId);
+        assertEquals("newAgePerson", originalPerson.name);
+        assertEquals(1, originalPerson.age);
+        assertEquals(personId, Long.valueOf(originalPerson.id));
+
+        personSvc.updatePerson(personId, new Person(originalPerson.name, 2, originalPerson.id));
+        Person updatedPerson = personSvc.getPerson(personId);
+        assertEquals("newAgePerson", updatedPerson.name);
+        assertEquals(2, updatedPerson.age);
+        assertEquals(personId, Long.valueOf(updatedPerson.id));
     }
 
     @Test(expected = NotFoundException.class)

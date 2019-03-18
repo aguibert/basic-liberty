@@ -23,11 +23,6 @@ public class LibertyContainer extends GenericContainer<LibertyContainer> {
         waitingFor(Wait.forLogMessage("^.*CWWKF0011I.*$", 1)); // wait for smarter planet message by default
     }
 
-    public LibertyContainer waitForMPHealth() {
-        waitingFor(new MPHealthWaitStrategy());
-        return self();
-    }
-
     public <T> T createRestClient(Class<T> clazz, String applicationPath) {
         List<Class<?>> providers = new ArrayList<>();
         providers.add(JsonBProvider.class);
