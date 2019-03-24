@@ -4,9 +4,9 @@ services:
     image: mongo:3.4
     ports:
       - "27017:27017"
-  basic-liberty:
+  my-service:
     build: .
-    image: basic-liberty
+    image: my-service
     depends_on:
       - "mongo"
     ports:

@@ -25,7 +25,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 
 public class PersonServiceTest {
 
-    private static final String APP_PATH = "/my-service";
+    private static final String APP_PATH = "/myservice";
     private static final String MONGO_HOST = "testmongo";
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonServiceTest.class);
 
@@ -39,7 +39,7 @@ public class PersonServiceTest {
                     .withLogConsumer(new Slf4jLogConsumer(LOGGER));
 
     @ClassRule
-    public static LibertyContainer libertyContainer = new LibertyContainer("basic-liberty")
+    public static LibertyContainer libertyContainer = new LibertyContainer("my-service")
                     .withExposedPorts(9080)
                     .waitingFor(Wait.forHttp(APP_PATH))
                     .withNetwork(network)
