@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -37,6 +38,13 @@ public class PersonService {
 
     @Inject
     MongoCollection<Document> peopleCollection;
+
+    @PostConstruct
+    public void initPeople() {
+        System.out.println("Seeding database with sample data");
+        createPerson("Sample Person A", 25);
+        createPerson("Sample Person B", 26);
+    }
 
     @GET
     public Collection<Person> getAllPeople() {
