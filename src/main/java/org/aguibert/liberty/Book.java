@@ -6,17 +6,17 @@ import javax.persistence.Id;
 
 @Entity
 public class Book {
-	
-	@Id
-	public int id;
-	
-	@Basic
-	public String author;
-	
-	@Basic
-	public String title;
-	
-	@Basic
-	public int pages;
+
+    @Id
+    public int id;
+
+    @Basic
+    public String author;
+
+    @Basic
+    public String title;
+
+    @Basic
+    public int pages;
 
 }

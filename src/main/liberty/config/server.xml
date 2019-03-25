@@ -1,11 +1,20 @@
 <server>
 
     <featureManager>
-    	<feature>webProfile-7.0</feature>
+        <feature>webProfile-7.0</feature>
     </featureManager>
     
     <keyStore password="changeit"/>
     
     <httpEndpoint id="defaultHttpEndpoint" httpPort="${httpPort}" httpsPort="${httpsPort}" />
+    
+    <library id="derbyLib">
+        <fileset dir="${server.config.dir}/lib" includes="derby*.jar"/>
+    </library>
+
+    <dataSource id="DefaultDataSource">
+        <jdbcDriver libraryRef="derbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:derbyDB"/>
+    </dataSource>
 
 </server>
