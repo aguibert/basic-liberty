@@ -5,8 +5,8 @@ group = 'org.aguibert'
 version = '1.0-SNAPSHOT'
 description = "Basic Liberty repo"
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 12
+targetCompatibility = 12
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
