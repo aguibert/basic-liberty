@@ -27,7 +27,7 @@ repositories {
 dependencies {
 	providedCompile 'javax:javaee-api:8.0'
 	providedCompile 'org.eclipse.microprofile:microprofile:2.1'
-    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '19.0.0.1'
+    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '19.0.0.3'
 }
 
 ext {
@@ -44,6 +44,7 @@ liberty {
 		configDirectory = file('src/main/liberty/config')
 	}
     install {
+        baseDir = '/Users/aguibert/dev/git/open-liberty/dev/build.image'
         //runtimeUrl = "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/beta/wlp-beta-2017.12.0.0.zip"
     }
 }
