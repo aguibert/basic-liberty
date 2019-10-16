@@ -1,7 +1,7 @@
 <server>
 
     <featureManager>
-        <feature>webProfile-7.0</feature>
+        <feature>webProfile-8.0</feature>
     </featureManager>
     
     <keyStore password="changeit"/>
