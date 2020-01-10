@@ -27,8 +27,14 @@ public class TestService {
         return result;
     }
 
+    @GET
+    @Path("/hello")
+    public String sayHello() {
+        return "Hello world";
+    }
+
     private void doTest() throws Exception {
-        log("Hello world");
+        log("Hello world 2");
     }
 
     private StringWriter sb = new StringWriter();

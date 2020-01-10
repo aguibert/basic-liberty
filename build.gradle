@@ -16,7 +16,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.6.3'
+        classpath 'io.openliberty.tools:liberty-gradle-plugin:3.0-M1'
     }
 }
 
@@ -27,20 +27,20 @@ repositories {
 dependencies {
 	providedCompile 'javax:javaee-api:8.0'
 	providedCompile 'org.eclipse.microprofile:microprofile:2.1'
-    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '19.0.0.3'
+	testCompile 'org.microshed:microshed-testing-liberty:0.6.2'
+	testCompile 'org.slf4j:slf4j-log4j12:1.7.29'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.5.2'
+    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '19.0.0.12'
 }
 
 ext {
-	httpPort = 8080
-	httpsPort = 8443
-	appUrl = 'http://localhost:8080/basic-liberty-1.0-SNAPSHOT/'
+	appUrl = 'http://localhost:8080/basic-liberty/'
 }
 
 liberty {
 	server {
 		name = rootProject.name + 'Server'
-		dropins = [war]
-		bootstrapProperties = ['httpPort': httpPort, 'httpsPort': httpsPort]
+		deploy.dropins = [war]
 		configDirectory = file('src/main/liberty/config')
 	}
     install {
@@ -69,4 +69,21 @@ libertyRun.dependsOn 'libertyStop'
 
 task start { dependsOn 'libertyStart' }
 task stop  { dependsOn 'libertyStop' }
+
+war.archiveName rootProject.name + '.war'
+test {
+    dependsOn 'war'
+    defaultCharacterEncoding = "UTF-8"
+    useJUnitPlatform()
+    testLogging {
+        displayGranularity 1
+        showStandardStreams = true
+        showStackTraces = true
+        exceptionFormat = 'full'
+        events 'PASSED', 'FAILED', 'SKIPPED'
+    }
+    //systemProperty "microshed_hostname", "localhost"
+    //systemProperty "microshed_http_port", "8080"
+    //systemProperty "microshed_https_port", "8443"
+}
 

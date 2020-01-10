@@ -1,0 +1,5 @@
+bin/
+build/
+src/
+!build/libs/basic-liberty.war
+!src/main/liberty/config

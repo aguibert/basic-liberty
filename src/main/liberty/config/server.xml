@@ -6,6 +6,11 @@
     
     <keyStore password="changeit"/>
     
-    <httpEndpoint id="defaultHttpEndpoint" httpPort="${httpPort}" httpsPort="${httpsPort}" />
+    <quickStartSecurity userName="bob" userPassword="somethingSecret"/>
+    
+    <variable name="http_port"  defaultValue="8080"/>
+    <variable name="https_port" defaultValue="8443"/>
+    
+    <httpEndpoint id="defaultHttpEndpoint" httpPort="${http_port}" httpsPort="${https_port}" />
 
 </server>
