@@ -1,7 +1,10 @@
 <server>
 
     <featureManager>
-        <feature>webProfile-8.0</feature>
+        <feature>jaxrs-2.1</feature>
+        <feature>cdi-2.0</feature>
+        <feature>concurrent-1.0</feature>
+        <feature>jndi-1.0</feature>
     </featureManager>
     
     <keyStore password="changeit"/>

@@ -1,48 +1,32 @@
 package org.aguibert.liberty;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 
-@Path("/")
+import org.aguibert.cdi.timers.Schedule;
+
 @ApplicationScoped
 public class TestService {
 
     @GET
-    public String test() {
-        try {
-            log(">>> ENTER");
-            doTest();
-            log("<<< EXIT SUCCESSFUL");
-        } catch (Exception e) {
-            e.printStackTrace(System.out);
-            e.printStackTrace(new PrintWriter(sb));
-            log("<<< EXIT FAILED");
-        }
-        String result = sb.toString();
-        sb = new StringWriter();
-        return result;
-    }
-
-    @GET
-    @Path("/hello")
     public String sayHello() {
         return "Hello world";
     }
 
-    private void doTest() throws Exception {
-        log("Hello world 2");
+    public void onScheduleA1(@Observes @Schedule(interval = 3, unit = TimeUnit.SECONDS) Instant now) {
+        System.out.println("@AGG onSchedule a1  now=" + now);
     }
 
-    private StringWriter sb = new StringWriter();
+    public void onScheduleA2(@Observes @Schedule(interval = 3, unit = TimeUnit.SECONDS) Instant now) {
+        System.out.println("@AGG onSchedule a2  now=" + now);
+    }
 
-    private void log(String msg) {
-        System.out.println(msg);
-        sb.append(msg);
-        sb.append("<br/>");
+    public void onSchedule2(@Observes @Schedule(interval = 9, unit = TimeUnit.SECONDS) Instant now) {
+        System.out.println("@AGG onSchedule b1  now=" + now);
     }
 
 }
