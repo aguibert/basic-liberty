@@ -44,12 +44,35 @@ public class TestService {
 
     private void doTest() throws Exception {
         log("Hello world");
-        log("This class is in: " + getClass().getModule());
 
         assertEquals("Hello world!", bean.sayHello());
 
         testJPA();
+        testSwitchExpressions();
+
+        log("Text block literal is:");
+        log(query);
     }
+
+    public static enum DAY {
+        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+    }
+
+    private void testSwitchExpressions() {
+        DAY day = DAY.valueOf("MONDAY");
+        switch (day) {
+            case MONDAY, FRIDAY, SUNDAY -> log("Case A");
+            case TUESDAY -> log("Case B");
+            case THURSDAY, SATURDAY -> log("Case C");
+            case WEDNESDAY -> log("Case D");
+        }
+        log("testSwitchExpressions COMPLETE");
+    }
+
+    String query = """
+                   SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`
+                   WHERE `CITY` = 'INDIANAPOLIS'
+    ORDER BY`EMP_ID`,`LAST_NAME`;""";
 
     private StringWriter sb = new StringWriter();
 

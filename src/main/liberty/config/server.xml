@@ -1,15 +1,18 @@
 <server>
 
     <featureManager>
-        <feature>webProfile-8.0</feature>
+        <feature>servlet-4.0</feature>
+        <feature>jaxrs-2.1</feature>
+        <feature>cdi-2.0</feature>
+        <feature>jpa-2.2</feature>
     </featureManager>
     
     <keyStore password="changeit"/>
     
-    <httpEndpoint id="defaultHttpEndpoint" httpPort="${httpPort}" httpsPort="${httpsPort}" />
+<!--     <httpEndpoint id="defaultHttpEndpoint" httpPort="${httpPort}" httpsPort="${httpsPort}" /> -->
     
     <library id="derbyLib">
-        <fileset dir="${server.config.dir}/lib" includes="derby*.jar"/>
+        <fileset dir="${shared.resource.dir}/derby"/>
     </library>
 
     <dataSource id="DefaultDataSource">

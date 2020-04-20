@@ -5,8 +5,8 @@ group = 'org.aguibert'
 version = '1.0-SNAPSHOT'
 description = "Basic Liberty repo"
 
-sourceCompatibility = 13
-targetCompatibility = 13
+sourceCompatibility = 14
+targetCompatibility = 14
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -17,6 +17,7 @@ compileJava {
     doFirst {
         options.compilerArgs = [
             '--module-path', classpath.asPath,
+            '--enable-preview'
         ]
         classpath = files()  
     }
@@ -27,7 +28,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.6.5'
+        classpath 'io.openliberty.tools:liberty-gradle-plugin:3.0'
     }
 }
 
@@ -48,31 +49,28 @@ dependencies {
     compileOnly group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
     compileOnly group: 'javax.transaction', name: 'javax.transaction-api', version: '1.3'
 	//compileOnly 'javax:javaee-api:8.0'
-    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '19.0.0.10'
+    libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '20.0.0.3'
     serverLibs group: 'org.apache.derby', name: 'derby', version: '10.14.2.0' // '10.15.1.3'
 }
 
-task copyServerLibs(type: Copy) {
-    from configurations.serverLibs
-    into "${buildDir}/wlp/usr/servers/${rootProject.name}Server/lib"
-}
-
 ext {
-	httpPort = 8080
-	httpsPort = 8443
-	appUrl = 'http://localhost:8080/basic-liberty-1.0-SNAPSHOT/'
+	appUrl = 'http://localhost:9080/basic-liberty/'
 }
 
 liberty {
 	server {
 		name = rootProject.name + 'Server'
-		dropins = [war]
-		bootstrapProperties = ['httpPort': httpPort, 'httpsPort': httpsPort]
-		configDirectory = file('src/main/liberty/config')
+                deploy {
+                    dropins = [war]
+		}
+                stripVersion = true
 	}
-    install {
-        //runtimeUrl = "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/beta/wlp-beta-2017.12.0.0.zip"
-    }
+    installDir = "/Users/aguibert/dev/git/open-liberty/dev/build.image/wlp/"
+}
+
+task copyServerLibs(type: Copy) {
+    from configurations.serverLibs
+    into "/Users/aguibert/dev/git/open-liberty/dev/build.image/wlp/usr/servers/${rootProject.name}Server/lib"
 }
 
 task openBrowser {
@@ -82,7 +80,7 @@ task openBrowser {
     }
 }
 
-installApps.dependsOn 'copyServerLibs'
+deploy.dependsOn 'copyServerLibs'
 libertyPackage.dependsOn 'libertyStop', 'copyServerLibs'
 
 clean.dependsOn 'libertyStop'
